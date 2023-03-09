@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Draw rectangle</title>
+</head>
+<body>
+<input type="button" value="Width" onclick="changeWidth()">
+<span>Chieu dai:<span id="width"></span></span>
+<p></p>
+<input type="button" value="Height" onclick="changeHeight()">
+<span>Chieu rong:<span id="height"></span></span>
+
+
+<p>Chu vi: <span id="displayPerimeter"></span></p>
+<p>Dien tich: <span id="displayArea"></span></p>
+<input type="button" value="draw" onclick="drawRectangle(rec)">
+<input type="button" value="delete" onclick="clearCanvas()">
+<br>
+<canvas id="myCanvas" width="1000" height="1000"></canvas>
+
+</body>
+<script>
+    class Rectangle {
+        constructor(width,height) {
+            this._width = width;
+            this._height = height;
+        }
+        getWidth() {
+            return this._width;
+        }
+        setWidth(value) {
+            this._width = value;
+        }
+        getHeight() {
+            return this._height;
+        }
+        setHeight(value) {
+            this._height = value;
+        }
+        calculatePerimeter() {
+            console.log(this._width)
+            console.log(this._height)
+            return 2*(parseInt(this._width) + parseInt(this._height));
+        }
+        calculateArea() {
+            return this._width*this._height;
+        }
+    }
+    let rec = new Rectangle(0,0);
+    function changeWidth() {
+        let value = prompt("Nhap chieu rong",0);
+        rec.setWidth(value)
+        document.getElementById("width").innerHTML = rec.getWidth();
+        document.getElementById("displayPerimeter").innerHTML= rec.calculatePerimeter();
+        document.getElementById("displayArea").innerHTML = rec.calculateArea();
+    }
+    function changeHeight() {
+        let value = prompt("Nhap vao chieu dai",0);
+        rec.setHeight(value);
+        document.getElementById("height").innerHTML = rec.getHeight();
+        document.getElementById("displayPerimeter").innerHTML= rec.calculatePerimeter();
+        document.getElementById("displayArea").innerHTML = rec.calculateArea();
+    }
+
+    function drawRectangle(rec) {
+        let canvas = document.getElementById("myCanvas");
+        let ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.reset();
+        ctx.moveTo(0,0);
+        ctx.lineTo(0, rec.getHeight());
+        ctx.lineTo(rec.getWidth(),rec.getHeight());
+        ctx.lineTo(rec.getWidth(),0);
+        ctx.lineTo(0,0);
+        ctx.stroke();
+    }
+    function clearCanvas() {
+        let canvas = document.getElementById("myCanvas");
+        let ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+</script>
+</html>
