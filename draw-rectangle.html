@@ -6,10 +6,10 @@
 </head>
 <body>
 <input type="button" value="Width" onclick="changeWidth()">
-<span>Chieu dai:<span id="width"></span></span>
+<span>Chieu rong:<span id="width"></span></span>
 <p></p>
 <input type="button" value="Height" onclick="changeHeight()">
-<span>Chieu rong:<span id="height"></span></span>
+<span>Chieu cao:<span id="height"></span></span>
 
 
 <p>Chu vi: <span id="displayPerimeter"></span></p>
@@ -63,15 +63,15 @@
         document.getElementById("displayArea").innerHTML = rec.calculateArea();
     }
 
-    function drawRectangle(rec) {
+    function drawRectangle(parameter) {
         let canvas = document.getElementById("myCanvas");
         let ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.reset();
         ctx.moveTo(0,0);
-        ctx.lineTo(0, rec.getHeight());
-        ctx.lineTo(rec.getWidth(),rec.getHeight());
-        ctx.lineTo(rec.getWidth(),0);
+        ctx.lineTo(0, parameter.getHeight());
+        ctx.lineTo(parameter.getWidth(),parameter.getHeight());
+        ctx.lineTo(parameter.getWidth(),0);
         ctx.lineTo(0,0);
         ctx.stroke();
     }
