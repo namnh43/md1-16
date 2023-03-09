@@ -39,12 +39,12 @@
             this._height = value;
         }
         calculatePerimeter() {
-            console.log(this._width)
-            console.log(this._height)
-            return 2*(parseInt(this._width) + parseInt(this._height));
+            if (this._width > 0 && this._height)
+                return 2*(parseInt(this._width) + parseInt(this._height));
         }
         calculateArea() {
-            return this._width*this._height;
+            if (this._width > 0 && this._height)
+                return this._width*this._height;
         }
     }
     let rec = new Rectangle(0,0);
