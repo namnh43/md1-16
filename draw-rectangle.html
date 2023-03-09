@@ -39,11 +39,11 @@
             this._height = value;
         }
         calculatePerimeter() {
-            if (this._width > 0 && this._height)
+            if (this._width > 0 && this._height > 0)
                 return 2*(parseInt(this._width) + parseInt(this._height));
         }
         calculateArea() {
-            if (this._width > 0 && this._height)
+            if (this._width > 0 && this._height > 0)
                 return this._width*this._height;
         }
     }
