@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mobile</title>
+</head>
+<body>
+<input type="text" id="typingMsg" placeholder="nhap noi dung tin nhan">
+<br>
+<input type="button" value="nokia send" id="nokia-send" onclick="sendMessage('nokia')">
+<input type="button" value="iphone send" id="iphone-send" onclick="sendMessage('iphone')">
+
+</body>
+<script>
+    class Mobile {
+        constructor(name) {
+            this._name = name;
+            this._batery = 10;
+            this._power = true;
+            this._typingMsg = "";
+            this._inBox = new Array();
+            this._outBox = new Array();
+        }
+
+        get name() {
+            return this._name;
+        }
+
+        set name(value) {
+            this._name = value;
+        }
+
+        get batery() {
+            return this._batery;
+        }
+
+        set batery(value) {
+            this._batery = value;
+        }
+
+        chargeBattery() {
+            if (this._batery < 100)
+                this._batery++;
+        }
+
+        decreaseBattery() {
+            if (this._batery > 0 && this._power) {
+                this._batery--;
+            }
+            if (this._batery == 0) {
+                this._power = false;
+            }
+        }
+
+        get power() {
+            return this._power;
+        }
+
+        set power(value) {
+            this._power = value;
+        }
+
+        get typingMsg() {
+            return this._typingMsg;
+        }
+
+        set typingMsg(value) {
+            this._typingMsg = value;
+        }
+
+        get inBox() {
+            return this._inBox;
+        }
+
+        sendMessage() {
+            if (this._power) {
+                let ret = this._typingMsg;
+                this._outBox.push(this._typingMsg);
+                this._typingMsg = '';
+                this.decreaseBattery();
+                return ret;
+            }
+        }
+        receiveMessage(phone) {
+            if (this._power) {
+                let from = phone.name;
+                let msg = phone.outBox[phone.outBox.length -1];
+                let msgObj = {
+                    from: from,
+                    msg: msg
+                }
+                this._inBox.push(msgObj);
+                this.decreaseBattery();
+            }
+        }
+        get outBox() {
+            return this._outBox;
+        }
+
+
+    }
+    let iphone = new Mobile("iphone");
+    let nokia = new Mobile("nokia");
+    function sendMessage(value) {
+        let typing = document.getElementById("typingMsg").value;
+        let msg = '';
+        switch (value) {
+            case 'nokia':
+                nokia.typingMsg = typing;
+                msg = nokia.sendMessage();
+                iphone.receiveMessage(nokia);
+                break;
+            case 'iphone':
+                iphone.typingMsg = typing;
+                msg = iphone.sendMessage();
+                nokia.receiveMessage(iphone);
+                break;
+            default:
+                break;
+        }
+        document.getElementById("typingMsg").value = '';
+        console.log(nokia.outBox)
+        console.log(nokia.inBox)
+        // console.log(iphone.outBox)
+        console.log(iphone.inBox)
+    }
+</script>
+</html>
