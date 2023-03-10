@@ -3,19 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <title>Mobile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <style>
+        table, th, td {
+            border-collapse: collapse;
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
 <input type="text" id="typingMsg" placeholder="nhap noi dung tin nhan">
 <br>
 <input type="button" value="nokia send" id="nokia-send" onclick="sendMessage('nokia')">
 <input type="button" value="iphone send" id="iphone-send" onclick="sendMessage('iphone')">
+<input type="button" value="charge nokia" id="nokia-charge" onclick="charge('nokia')">
+<input type="button" value="charge iphone" id="iphone-charge" onclick="charge('iphone')">
+<input type="button" value="on/off nokia" id="nokia-power-toogle" onclick="power('nokia')">
+<input type="button" value="on/off iphone" id="iphone-power-toogle" onclick="power('iphone')">
+<br>
+<br>
+<table id="displayTbl">
+    <tr>
+        <th></th>
+        <th>Nokia</th>
+        <th>Iphone</th>
+
+    </tr>
+    <tr>
+        <th>Inbox</th>
+        <td>
+            <ol id="nokia-inbox">
+
+            </ol>
+        </td>
+        <td>
+            <ol id="iphone-inbox">
+
+            </ol>
+        </td>
+    </tr>
+    <tr>
+        <th>Outbox</th>
+        <td>
+            <ol id="nokia-outbox">
+
+            </ol>
+        </td>
+        <td>
+            <ol id="iphone-outbox">
+
+            </ol>
+        </td>
+    </tr>
+    <tr>
+        <th>Power status</th>
+        <td id="nokia-power"></td>
+        <td id="iphone-power"></td>
+    </tr>
+    <tr>
+        <th>Battery level</th>
+        <td id="nokia-battery"></td>
+        <td id="iphone-battery"></td>
+    </tr>
+</table>
 
 </body>
 <script>
     class Mobile {
         constructor(name) {
             this._name = name;
-            this._batery = 10;
+            this._batery = 2;
             this._power = true;
             this._typingMsg = "";
             this._inBox = new Array();
@@ -59,7 +118,12 @@
         set power(value) {
             this._power = value;
         }
-
+        tooglePower(){
+            if (this.batery == 0){
+                return;
+            }
+            this.power = !this.power;
+        }
         get typingMsg() {
             return this._typingMsg;
         }
@@ -91,7 +155,9 @@
                 }
                 this._inBox.push(msgObj);
                 this.decreaseBattery();
+                return true;
             }
+            return false;
         }
         get outBox() {
             return this._outBox;
@@ -101,28 +167,81 @@
     }
     let iphone = new Mobile("iphone");
     let nokia = new Mobile("nokia");
+    function displayStatus() {
+        $("#nokia-battery").html(nokia.batery)
+        $("#iphone-battery").html(iphone.batery)
+        $("#nokia-power").html(nokia.power)
+        $("#iphone-power").html(iphone.power)
+    }
     function sendMessage(value) {
         let typing = document.getElementById("typingMsg").value;
         let msg = '';
+        let inbox = '';
         switch (value) {
             case 'nokia':
                 nokia.typingMsg = typing;
                 msg = nokia.sendMessage();
-                iphone.receiveMessage(nokia);
+                if (msg == undefined) {
+                    alert('cannot send message, please power or charge phone')
+                    return;
+                }
+
+                inbox = iphone.receiveMessage(nokia);
+                //Display
+                $("#nokia-outbox").append(`<li>${msg} -> iphone</li>`)
+                if (inbox) {
+                    $("#iphone-inbox").append(`<li>"nokia: " ${msg}</li>`)
+                }
                 break;
             case 'iphone':
                 iphone.typingMsg = typing;
                 msg = iphone.sendMessage();
-                nokia.receiveMessage(iphone);
+                console.log(msg);
+                if (msg == undefined) {
+                    alert('cannot send message, please power or charge phone')
+                    return;
+                }
+                $("#iphone-outbox").append(`<li>${msg} -> nokia</li>`)
+                inbox = nokia.receiveMessage(iphone);
+                if (inbox) {
+                    $("#nokia-inbox").append(`<li>"iphone: " ${msg}</li>`)
+                }
                 break;
             default:
                 break;
         }
         document.getElementById("typingMsg").value = '';
+        displayStatus();
         console.log(nokia.outBox)
         console.log(nokia.inBox)
-        // console.log(iphone.outBox)
         console.log(iphone.inBox)
     }
+    function charge(value) {
+        switch (value) {
+            case 'nokia':
+                nokia.chargeBattery();
+                break;
+            case 'iphone':
+                iphone.chargeBattery();
+                break;
+            default:
+                break;
+        }
+        displayStatus();
+    }
+    function power(val) {
+        switch (val) {
+            case 'nokia':
+                nokia.tooglePower();
+                break;
+            case 'iphone':
+                iphone.tooglePower();
+                break;
+            default:
+                break;
+        }
+        displayStatus();
+    }
+    displayStatus();
 </script>
 </html>
